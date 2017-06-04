@@ -10,7 +10,7 @@ const logX = require('@studio/log-x');
 
 
 const log = logger('app');
-log.setFilter(logX.filter('connection.password'));
+log.setFilter(logX('connection.password'));
 
 log.input('db', { connection: { login: 'admin', password: 'secret' } });
 ```
@@ -27,16 +27,15 @@ references as log data.
 
 ## API
 
-The API consist of a single default function that accepts string paths to
-properties to x out:
+The API consist of a single default function:
 
-- `filter(path...)`: Returns a transform stream in object mode that filters the
+- `(path...)`: Returns a transform stream in object mode that filters the
   properties at the given paths.
-- `topics(map)`: Maps topic names to filters. The special `*` topic is used if
-  no matching topic filter was specified.
+- `(map)`: Maps topic names to filters. The special `*` topic is used if no
+  matching topic filter was specified.
 
 ```js
-logX.topics({
+logX({
   input: ['connection.user', 'connection.password'],
   '*': ['token']
 });

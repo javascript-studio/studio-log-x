@@ -4,10 +4,10 @@
 const assert = require('assert');
 const logX = require('..');
 
-describe('filter', () => {
+describe('x', () => {
 
   it('passes unmatched object through', () => {
-    const filter = logX.filter('test');
+    const filter = logX('test');
     const entries = [];
     filter.on('data', (entry) => {
       entries.push(entry);
@@ -21,7 +21,7 @@ describe('filter', () => {
   });
 
   it('passes modified copy with filtered property', () => {
-    const filter = logX.filter('key');
+    const filter = logX('key');
     const entries = [];
     filter.on('data', (entry) => {
       entries.push(entry);
@@ -36,7 +36,7 @@ describe('filter', () => {
   });
 
   it('replaces multiple properties', () => {
-    const filter = logX.filter('key1', 'key2');
+    const filter = logX('key1', 'key2');
     const entries = [];
     filter.on('data', (entry) => {
       entries.push(entry);
@@ -55,7 +55,7 @@ describe('filter', () => {
   });
 
   it('replaces deeps property', () => {
-    const filter = logX.filter('key.child.deep');
+    const filter = logX('key.child.deep');
     const entries = [];
     filter.on('data', (entry) => {
       entries.push(entry);
@@ -76,7 +76,7 @@ describe('filter', () => {
   });
 
   it('does not fail if deep property does not exist', () => {
-    const filter = logX.filter('key.child.deep');
+    const filter = logX('key.child.deep');
     const entries = [];
     filter.on('data', (entry) => {
       entries.push(entry);
@@ -90,7 +90,7 @@ describe('filter', () => {
   });
 
   it('does not add property', () => {
-    const filter = logX.filter('key');
+    const filter = logX('key');
     const entries = [];
     filter.on('data', (entry) => {
       entries.push(entry);
