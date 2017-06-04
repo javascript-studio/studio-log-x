@@ -40,6 +40,13 @@ logX({
 });
 ```
 
+## Supported property path notations
+
+- `key`
+- `key.path`
+- `items[0]`
+- `items[':a']`
+
 ## Related modules
 
 - 👻 [Studio Log][1] logs ndjson to an output stream
