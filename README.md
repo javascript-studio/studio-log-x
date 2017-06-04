@@ -8,9 +8,8 @@
 const logger = require('@studio/log').out(process.stdout);
 const logX = require('@studio/log-x');
 
-
 const log = logger('app');
-log.setFilter(logX('connection.password'));
+log.filter(logX('connection.password'));
 
 log.input('db', { connection: { login: 'admin', password: 'secret' } });
 ```
