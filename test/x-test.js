@@ -103,4 +103,55 @@ describe('x', () => {
     assert.strictEqual(entries[0], original);
   });
 
+  it('replaces properties in topic', () => {
+    const filter = logX({
+      wtf: ['key1', 'key2']
+    });
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({ topic: 'wtf', key1: 'a', key2: 'b', key3: 'c' });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'wtf',
+      key1: '·····',
+      key2: '·····',
+      key3: 'c'
+    });
+  });
+
+  it('does not replace property in other topic', () => {
+    const filter = logX({
+      wtf: ['key']
+    });
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    const original = { topic: 'input', key: 'value' };
+    filter.write(original);
+
+    assert.equal(entries.length, 1);
+    assert.strictEqual(entries[0], original);
+  });
+
+  it('replaces property in default', () => {
+    const filter = logX({
+      '*': ['key']
+    });
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({ topic: 'output', key: 'value' });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], { topic: 'output', key: '·····' });
+  });
+
 });
