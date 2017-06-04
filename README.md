@@ -40,12 +40,16 @@ logX({
 });
 ```
 
-## Supported property path notations
+## Supported notations
 
-- `key`
-- `key.path`
-- `items[0]`
-- `items[':a']`
+- `key`: Property access.
+- `key.path`: Property path access.
+- `items[0]`: Array index access.
+- `items[':a']`: Quoted property access.
+- `item.*`: All values in object.
+- `items[*]`: All entries in array.
+- `item.*.key`: Property access in each value of object.
+- `items[*].key`: Property access in each entry of array.
 
 ## Related modules
 

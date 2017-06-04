@@ -246,4 +246,99 @@ describe('x', () => {
     });
   });
 
+  it('finds properties in array', () => {
+    const filter = logX('items[*].key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { items: [{ text: 'visible' }, { key: 'secret' }] }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { items: [{ text: 'visible' }, { key: '·····' }] }
+    });
+  });
+
+  it('finds properties in object (dot notation)', () => {
+    const filter = logX('*.key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { foo: { text: 'visible', key: 'secret' }, bar: { key: 'other' } }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { foo: { text: 'visible', key: '·····' }, bar: { key: '·····' } }
+    });
+  });
+
+  it('finds properties in object (brackets notation)', () => {
+    const filter = logX('[*].key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { foo: { text: 'visible', key: 'secret' }, bar: { key: 'other' } }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { foo: { text: 'visible', key: '·····' }, bar: { key: '·····' } }
+    });
+  });
+
+  it('filters all array properties', () => {
+    const filter = logX('items[*]');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { items: ['one', 'two', 'three'] }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { items: ['···', '···', '···'] }
+    });
+  });
+
+  it('finds properties in object', () => {
+    const filter = logX('[*]');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { a: 'one', b: 'two', c: 'three' }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { a: '···', b: '···', c: '···' }
+    });
+  });
+
 });
