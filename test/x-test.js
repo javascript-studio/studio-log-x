@@ -170,4 +170,80 @@ describe('x', () => {
     assert.deepEqual(entries[0], { topic: 'output', data: { key: '·····' } });
   });
 
+  it('replaces index in array', () => {
+    const filter = logX('items[0]');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { items: ['value'] }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { items: ['·····'] }
+    });
+  });
+
+  it('replaces property in array', () => {
+    const filter = logX('items[0].key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { items: [{ key: 'value' }] }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { items: [{ key: '·····' }] }
+    });
+  });
+
+  it('replaces property in reflective property name (single quote)', () => {
+    const filter = logX('items[":a"].key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { items: { ':a': { key: 'value' } } }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { items: { ':a': { key: '·····' } } }
+    });
+  });
+
+  it('replaces property in reflective property name (double quote)', () => {
+    const filter = logX('items[\':a\'].key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    filter.write({
+      topic: 'output',
+      data: { items: { ':a': { key: 'value' } } }
+    });
+
+    assert.equal(entries.length, 1);
+    assert.deepEqual(entries[0], {
+      topic: 'output',
+      data: { items: { ':a': { key: '·····' } } }
+    });
+  });
+
 });
