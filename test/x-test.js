@@ -13,7 +13,7 @@ describe('x', () => {
       entries.push(entry);
     });
 
-    const original = { key: 'value' };
+    const original = { topic: 'ok', data: { key: 'value' } };
     filter.write(original);
 
     assert.equal(entries.length, 1);
@@ -27,12 +27,14 @@ describe('x', () => {
       entries.push(entry);
     });
 
-    const original = { key: 'value' };
-    filter.write(original);
+    const original_data = { key: 'value' };
+    const original_entry = { topic: 'ok', data: original_data };
+    filter.write(original_entry);
 
     assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], { key: '·····' });
-    assert.notStrictEqual(entries[0], original);
+    assert.deepEqual(entries[0], { topic: 'ok', data: { key: '·····' } });
+    assert.strictEqual(entries[0], original_entry);
+    assert.notStrictEqual(entries[0].data, original_data.data);
   });
 
   it('replaces multiple properties', () => {
@@ -43,18 +45,24 @@ describe('x', () => {
     });
 
     const original = { key1: 'value', key2: 'other', key3: 'plain' };
-    filter.write(original);
+    filter.write({
+      topic: 'ok',
+      data: original
+    });
 
     assert.equal(entries.length, 1);
     assert.deepEqual(entries[0], {
-      key1: '·····',
-      key2: '·····',
-      key3: 'plain'
+      topic: 'ok',
+      data: {
+        key1: '·····',
+        key2: '·····',
+        key3: 'plain'
+      }
     });
-    assert.notStrictEqual(entries[0], original);
+    assert.notStrictEqual(entries[0].data, original);
   });
 
-  it('replaces deeps property', () => {
+  it('replaces deep property', () => {
     const filter = logX('key.child.deep');
     const entries = [];
     filter.on('data', (entry) => {
@@ -62,17 +70,23 @@ describe('x', () => {
     });
 
     const original = { key: { child: { deep: 'test' } } };
-    filter.write(original);
+    filter.write({
+      topic: 'ok',
+      data: original
+    });
 
     assert.equal(entries.length, 1);
     assert.deepEqual(entries[0], {
-      key: {
-        child: {
-          deep: '·····'
+      topic: 'ok',
+      data: {
+        key: {
+          child: {
+            deep: '·····'
+          }
         }
       }
     });
-    assert.notStrictEqual(entries[0], original);
+    assert.notStrictEqual(entries[0].data, original.data);
   });
 
   it('does not fail if deep property does not exist', () => {
@@ -82,7 +96,7 @@ describe('x', () => {
       entries.push(entry);
     });
 
-    const original = { key: 'is something else' };
+    const original = { topic: 'ok', data: { key: 'is something else' } };
     filter.write(original);
 
     assert.equal(entries.length, 1);
@@ -96,7 +110,7 @@ describe('x', () => {
       entries.push(entry);
     });
 
-    const original = {};
+    const original = { topic: 'ok', data: {} };
     filter.write(original);
 
     assert.equal(entries.length, 1);
@@ -112,14 +126,16 @@ describe('x', () => {
       entries.push(entry);
     });
 
-    filter.write({ topic: 'wtf', key1: 'a', key2: 'b', key3: 'c' });
+    filter.write({ topic: 'wtf', data: { key1: 'a', key2: 'b', key3: 'c' } });
 
     assert.equal(entries.length, 1);
     assert.deepEqual(entries[0], {
       topic: 'wtf',
-      key1: '·····',
-      key2: '·····',
-      key3: 'c'
+      data: {
+        key1: '·····',
+        key2: '·····',
+        key3: 'c'
+      }
     });
   });
 
@@ -132,7 +148,7 @@ describe('x', () => {
       entries.push(entry);
     });
 
-    const original = { topic: 'input', key: 'value' };
+    const original = { topic: 'input', data: { key: 'value' } };
     filter.write(original);
 
     assert.equal(entries.length, 1);
@@ -148,10 +164,10 @@ describe('x', () => {
       entries.push(entry);
     });
 
-    filter.write({ topic: 'output', key: 'value' });
+    filter.write({ topic: 'output', data: { key: 'value' } });
 
     assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], { topic: 'output', key: '·····' });
+    assert.deepEqual(entries[0], { topic: 'output', data: { key: '·····' } });
   });
 
 });
