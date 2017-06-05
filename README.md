@@ -24,6 +24,12 @@ The above produces this log output:
 Data objects are copied before modification to make it save to pass object
 references as log data.
 
+## Install
+
+```bash
+$ npm install @studio/log-x --save
+```
+
 ## API
 
 The API consist of a single default function:
