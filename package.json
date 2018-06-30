@@ -9,7 +9,7 @@
     "watch": "mocha --watch",
     "posttest": "npm run lint",
     "preversion": "npm test",
-    "version": "changes",
+    "version": "changes --commits",
     "postversion": "git push --follow-tags && npm publish"
   },
   "keywords": [
