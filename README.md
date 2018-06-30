@@ -27,7 +27,7 @@ references as log data.
 ## Install
 
 ```bash
-$ npm install @studio/log-x --save
+❯ npm i @studio/log-x
 ```
 
 ## API
