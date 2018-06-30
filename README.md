@@ -21,7 +21,7 @@ The above produces this log output:
   "connection":{"login":"admin","password":"·····"}}}
 ```
 
-Data objects are copied before modification to make it save to pass object
+Data objects are copied before modification to make it safe to pass object
 references as log data.
 
 ## Install
@@ -32,18 +32,23 @@ references as log data.
 
 ## API
 
-The API consist of a single default function:
-
-- `(path...)`: Returns a transform stream in object mode that filters the
+- `x(path...)`: Returns a transform stream in object mode that filters the
   properties at the given paths.
-- `(map)`: Maps topic names to filters. The special `*` topic is used if no
+- `x(map)`: Maps topic names to filters. The special `*` topic is used if no
   matching topic filter was specified.
+- `x.ns(ns, path...)`: Like `x(path...)`, but only for the specified namespace.
+- `x.ns(ns, map)`: Like `x(map)`, but only for the specified namespace.
+
 
 ```js
+// x(map)
 logX({
   input: ['connection.user', 'connection.password'],
   '*': ['token']
 });
+
+// x.ns(ns, path...)
+logX.ns('Login', 'request.user', 'request.password');
 ```
 
 ## Supported notations

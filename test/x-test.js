@@ -34,7 +34,7 @@ describe('x', () => {
     assert.equals(entries.length, 1);
     assert.equals(entries[0], { topic: 'ok', data: { key: '·····' } });
     assert.same(entries[0], original_entry);
-    refute.same(entries[0].data, original_data.data);
+    refute.same(entries[0].data, original_data);
   });
 
   it('replaces multiple properties', () => {
@@ -339,6 +339,43 @@ describe('x', () => {
       topic: 'output',
       data: { a: '···', b: '···', c: '···' }
     });
+  });
+
+  it('applies filter for specified namespace', () => {
+    const filter = logX.ns('Test', 'key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    const original_data = { key: 'value' };
+    const original_entry = { ns: 'Test', topic: 'disk', data: original_data };
+    filter.write(original_entry);
+
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
+      ns: 'Test',
+      topic: 'disk',
+      data: { key: '·····' }
+    });
+    assert.same(entries[0], original_entry);
+    refute.same(entries[0].data, original_data);
+  });
+
+  it('does not apply filter for different namespace', () => {
+    const filter = logX.ns('Test', 'key');
+    const entries = [];
+    filter.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    const original_data = { key: 'value' };
+    const original_entry = { ns: 'Foo', topic: 'disk', data: original_data };
+    filter.write(original_entry);
+
+    assert.equals(entries.length, 1);
+    assert.same(entries[0], original_entry);
+    assert.same(entries[0].data, original_data);
   });
 
 });
