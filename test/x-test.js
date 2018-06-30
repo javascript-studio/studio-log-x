@@ -1,7 +1,7 @@
 /*eslint-env mocha*/
 'use strict';
 
-const assert = require('assert');
+const { assert, refute } = require('@sinonjs/referee');
 const logX = require('..');
 
 describe('x', () => {
@@ -16,8 +16,8 @@ describe('x', () => {
     const original = { topic: 'ok', data: { key: 'value' } };
     filter.write(original);
 
-    assert.equal(entries.length, 1);
-    assert.strictEqual(entries[0], original);
+    assert.equals(entries.length, 1);
+    assert.same(entries[0], original);
   });
 
   it('passes modified copy with filtered property', () => {
@@ -31,10 +31,10 @@ describe('x', () => {
     const original_entry = { topic: 'ok', data: original_data };
     filter.write(original_entry);
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], { topic: 'ok', data: { key: '·····' } });
-    assert.strictEqual(entries[0], original_entry);
-    assert.notStrictEqual(entries[0].data, original_data.data);
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], { topic: 'ok', data: { key: '·····' } });
+    assert.same(entries[0], original_entry);
+    refute.same(entries[0].data, original_data.data);
   });
 
   it('replaces multiple properties', () => {
@@ -50,8 +50,8 @@ describe('x', () => {
       data: original
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'ok',
       data: {
         key1: '·····',
@@ -59,7 +59,7 @@ describe('x', () => {
         key3: 'plain'
       }
     });
-    assert.notStrictEqual(entries[0].data, original);
+    refute.same(entries[0].data, original);
   });
 
   it('replaces deep property', () => {
@@ -75,8 +75,8 @@ describe('x', () => {
       data: original
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'ok',
       data: {
         key: {
@@ -86,7 +86,7 @@ describe('x', () => {
         }
       }
     });
-    assert.notStrictEqual(entries[0].data, original.data);
+    refute.same(entries[0].data, original.data);
   });
 
   it('does not fail if deep property does not exist', () => {
@@ -99,8 +99,8 @@ describe('x', () => {
     const original = { topic: 'ok', data: { key: 'is something else' } };
     filter.write(original);
 
-    assert.equal(entries.length, 1);
-    assert.strictEqual(entries[0], original);
+    assert.equals(entries.length, 1);
+    assert.same(entries[0], original);
   });
 
   it('does not add property', () => {
@@ -113,8 +113,8 @@ describe('x', () => {
     const original = { topic: 'ok', data: {} };
     filter.write(original);
 
-    assert.equal(entries.length, 1);
-    assert.strictEqual(entries[0], original);
+    assert.equals(entries.length, 1);
+    assert.same(entries[0], original);
   });
 
   it('replaces properties in topic', () => {
@@ -128,8 +128,8 @@ describe('x', () => {
 
     filter.write({ topic: 'wtf', data: { key1: 'a', key2: 'b', key3: 'c' } });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'wtf',
       data: {
         key1: '·····',
@@ -151,8 +151,8 @@ describe('x', () => {
     const original = { topic: 'input', data: { key: 'value' } };
     filter.write(original);
 
-    assert.equal(entries.length, 1);
-    assert.strictEqual(entries[0], original);
+    assert.equals(entries.length, 1);
+    assert.same(entries[0], original);
   });
 
   it('replaces property in default', () => {
@@ -166,8 +166,8 @@ describe('x', () => {
 
     filter.write({ topic: 'output', data: { key: 'value' } });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], { topic: 'output', data: { key: '·····' } });
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], { topic: 'output', data: { key: '·····' } });
   });
 
   it('replaces index in array', () => {
@@ -182,8 +182,8 @@ describe('x', () => {
       data: { items: ['value'] }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { items: ['·····'] }
     });
@@ -201,8 +201,8 @@ describe('x', () => {
       data: { items: [{ key: 'value' }] }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { items: [{ key: '·····' }] }
     });
@@ -220,8 +220,8 @@ describe('x', () => {
       data: { items: { ':a': { key: 'value' } } }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { items: { ':a': { key: '·····' } } }
     });
@@ -239,8 +239,8 @@ describe('x', () => {
       data: { items: { ':a': { key: 'value' } } }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { items: { ':a': { key: '·····' } } }
     });
@@ -258,8 +258,8 @@ describe('x', () => {
       data: { items: [{ text: 'visible' }, { key: 'secret' }] }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { items: [{ text: 'visible' }, { key: '·····' }] }
     });
@@ -277,8 +277,8 @@ describe('x', () => {
       data: { foo: { text: 'visible', key: 'secret' }, bar: { key: 'other' } }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { foo: { text: 'visible', key: '·····' }, bar: { key: '·····' } }
     });
@@ -296,8 +296,8 @@ describe('x', () => {
       data: { foo: { text: 'visible', key: 'secret' }, bar: { key: 'other' } }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { foo: { text: 'visible', key: '·····' }, bar: { key: '·····' } }
     });
@@ -315,8 +315,8 @@ describe('x', () => {
       data: { items: ['one', 'two', 'three'] }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { items: ['···', '···', '···'] }
     });
@@ -334,8 +334,8 @@ describe('x', () => {
       data: { a: 'one', b: 'two', c: 'three' }
     });
 
-    assert.equal(entries.length, 1);
-    assert.deepEqual(entries[0], {
+    assert.equals(entries.length, 1);
+    assert.equals(entries[0], {
       topic: 'output',
       data: { a: '···', b: '···', c: '···' }
     });
