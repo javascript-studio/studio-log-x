@@ -1,5 +1,10 @@
 # Changes
 
+## 1.3.0
+
+- 🍏 [`2b6c278`](https://github.com/javascript-studio/studio-log-x/commit/2b6c2780340b89ff696c1c9231a6aab1aacbf40c)
+  Introduce `all` to combine the given x-out transforms
+
 ## 1.2.0
 
 - 🍏 [`493378a`](https://github.com/javascript-studio/studio-log-x/commit/493378a6c4c8c9f0260943321999757ba1f2c995)
