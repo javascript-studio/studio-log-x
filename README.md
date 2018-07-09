@@ -38,6 +38,7 @@ references as log data.
   matching topic filter was specified.
 - `x.ns(ns, path...)`: Like `x(path...)`, but only for the specified namespace.
 - `x.ns(ns, map)`: Like `x(map)`, but only for the specified namespace.
+- `x.all(transform...)`: Combine the given x-out transforms.
 
 
 ```js

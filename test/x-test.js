@@ -378,4 +378,51 @@ describe('x', () => {
     assert.same(entries[0].data, original_data);
   });
 
+  it('combines multiple streams', () => {
+    const all = logX.all(
+      logX('a'),
+      logX('b'),
+      logX('c')
+    );
+    const entries = [];
+    all.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    all.write({ topic: 'disk', data: { a: 'A' } });
+    all.write({ topic: 'disk', data: { b: 'B' } });
+    all.write({ topic: 'disk', data: { c: 'C' } });
+    all.write({ topic: 'disk', data: { a: 'A', b: 'B' } });
+    all.write({ topic: 'disk', data: { b: 'B', c: 'C' } });
+    all.write({ topic: 'disk', data: { a: 'A', c: 'C' } });
+
+    assert.equals(entries.length, 6);
+    assert.match(entries[0], { data: { a: '·····' } });
+    assert.match(entries[1], { data: { b: '·····' } });
+    assert.match(entries[2], { data: { c: '·····' } });
+    assert.match(entries[3], { data: { a: '·····', b: '·····' } });
+    assert.match(entries[4], { data: { b: '·····', c: '·····' } });
+    assert.match(entries[5], { data: { a: '·····', c: '·····' } });
+  });
+
+  it('combines deep filters', () => {
+    const all = logX.all(
+      logX('a.x'),
+      logX('b')
+    );
+    const entries = [];
+    all.on('data', (entry) => {
+      entries.push(entry);
+    });
+
+    all.write({ topic: 'disk', data: { a: { x: 'A' } } });
+    all.write({ topic: 'disk', data: { b: 'B' } });
+    all.write({ topic: 'disk', data: { a: { x: 'A' }, b: 'B' } });
+
+    assert.equals(entries.length, 3);
+    assert.match(entries[0], { data: { a: { x: '·····' } } });
+    assert.match(entries[1], { data: { b: '·····' } });
+    assert.match(entries[2], { data: { a: { x: '·····' }, b: '·····' } });
+  });
+
 });
