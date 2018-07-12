@@ -425,4 +425,64 @@ describe('x', () => {
     assert.match(entries[2], { data: { a: { x: '·····' }, b: '·····' } });
   });
 
+  describe('with null property', () => {
+
+    it('does not fail if property is null', () => {
+      const filter = logX('key.child');
+
+      refute.exception(() => {
+        filter.write({ topic: 'ok', data: { key: null } });
+      });
+    });
+
+    it('does not fail if deep property is null', () => {
+      const filter = logX('key.child.deep');
+
+      refute.exception(() => {
+        filter.write({ topic: 'ok', data: { key: null } });
+      });
+    });
+
+  });
+
+  describe('with prototype-less object', () => {
+
+    it('does not fail on prototype-less object', () => {
+      const filter = logX('key');
+
+      refute.exception(() => {
+        filter.write({ topic: 'ok', data: Object.create(null) });
+      });
+    });
+
+    it('does not fail on prototype-less object (key.child)', () => {
+      const filter = logX('key.child');
+
+      refute.exception(() => {
+        filter.write({ topic: 'ok', data: Object.create(null) });
+      });
+    });
+
+    it('does not fail on prototype-less object ([*])', () => {
+      const filter = logX('[*]');
+      const data = Object.create(null);
+      data.key = 1;
+
+      refute.exception(() => {
+        filter.write({ topic: 'ok', data });
+      });
+    });
+
+    it('does not fail on prototype-less object (*.key)', () => {
+      const filter = logX('*.key');
+      const data = Object.create(null);
+      data.key = 1;
+
+      refute.exception(() => {
+        filter.write({ topic: 'ok', data });
+      });
+    });
+
+  });
+
 });
