@@ -1,5 +1,10 @@
 # Changes
 
+## 1.3.1
+
+- 🐛 [`828738c`](https://github.com/javascript-studio/studio-log-x/commit/828738c2fbc3243a829dacbd5e182962c61ed27e)
+  Fix handling of null and prototype-less objects
+
 ## 1.3.0
 
 - 🍏 [`2b6c278`](https://github.com/javascript-studio/studio-log-x/commit/2b6c2780340b89ff696c1c9231a6aab1aacbf40c)
